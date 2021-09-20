@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Physics</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="mootools-trunk-1545.js" type="text/javascript"></script>
+  <script src="../../ObjectManager/ObjectManager.js" type="text/javascript"></script>
+  <script src="../CanvasRenderer.js" type="text/javascript"></script>
+  <script src="../EventModel.js" type="text/javascript"></script>
+  <script src="../Physics.js" type="text/javascript"></script>
+  <script src="../Physics.Atom.js" type="text/javascript"></script>
+  <script src="../Physics.Constraint.js" type="text/javascript"></script>
+  <script src="../Physics.Group.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+var physics = new Physics();
+physics.gravityX = 0;
+physics.gravityY = 0;
+
+var colors = ['#800', '#c00', '#060', '#0a0', '#008', '#aaa', '#00d', '#8c0', '#c0c', '#fc0', '#0cf', '#0aa', '#a0f', '#f0a'];
+
+var g, p, r;
+for (var i = 0; i < colors.length * 8; i++) {
+    r = 3 + Math.round(Math.random() * 10);
+    if (r > 10) r = 10 + Math.round(Math.random() * 20);
+
+    g = new Physics.Group();
+    p = g.add(new Physics.Atom(600 + Math.random() - 0.5, 450 + Math.random() - 0.5));
+    p.mass = 5000000000 * r;
+    p.radius = r;
+    p.meta.color = colors[i % colors.length];
+    p.meta.size = r;
+    physics.add(g);
+}
+
+r = 10;
+g = new Physics.Group();
+p = g.add(new Physics.Atom(600, 450));
+p.mass = 20000000000;
+p.radius = r;
+p.meta.color = '#000';
+p.meta.size = r;
+physics.add(g);
+
+var canvas = new CanvasRenderer(physics);
+canvas.setSize(1200, 900);
+
+physics.setUp();
+physics.step.periodical(10, physics);
+
+canvas.step();
+
+var eat = false;
+(function () { eat = true; }).delay(1000);
+
+physics.addObserver({
+    step: function () {
+        canvas.center(p.x, p.y);
+
+        if (!eat) return;
+        
+        for (var i = 0; i < physics.atoms.length; i++) {
+            var a = physics.atoms[i];
+            if (a == p) continue;
+            
+            var dx = a.x - p.x, dy = a.y - p.y;
+            if (Math.sqrt(dx * dx + dy * dy) < a.radius + p.radius + 1) {
+                p.meta.size += a.radius / p.radius * 0.005;
+                p.radius += a.radius / p.radius * 0.005;
+                p.mass += 500000000;
+                
+                a.radius -= 0.1;
+                a.mass -= 500000000;
+                a.meta.size -= 0.1;
+                
+                if (a.radius < 0.1) physics.remove(a.group);
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

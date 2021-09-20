@@ -1,0 +1,183 @@
+div.timeline, div.timeline * {
+  font-size: 1em;
+  line-height: 1.2em;
+  margin: 0;
+  padding: 0;
+}
+
+div.timeline {
+  font-family: sans-serif;
+  margin: 3em 2.5% 1em;
+  position: relative;
+  width: 95%;
+}
+
+div.timeline div.overlay {
+  background: url(fade.png) repeat-y 100% 0;
+  height: 100%;
+  right: -1px;
+  padding-bottom: 4em;
+  position: absolute;
+  top: -4em;
+  width: 75px;
+  z-index: 2;
+}
+
+div.timeline dl.activity-info {
+  background: url(tooltip.gif) no-repeat;
+  border-bottom: #000 solid 1px;
+  color: #000;
+  cursor: default;
+  filter: alpha(opacity=90);
+  left: -18px;
+  font-size: 1.2em;
+  padding: 10px 0 0;
+  opacity: .9;
+  position: absolute;
+  text-align: left;
+  top: 100%;
+  width: 250px;
+  z-index: 3;
+}
+
+div.timeline dl.activity-info dd, div.timeline dl.activity-info dt {
+  background: #ffa;
+  padding: 2px;
+}
+
+div.timeline dl.activity-info dt {
+  clear: left;
+  float: left;
+  font-weight: bold;
+  width: 75px;
+}
+
+div.timeline dl.time-axis {
+  color: #666;
+  font-size: .6em;
+  height: 4em;
+  left: 10%;
+  overflow: hidden;
+  position: absolute;
+  top: -4em;
+  width: 90%;
+  z-index: 1;
+}
+
+div.timeline dl.time-axis dd, div.timeline dl.time-axis dt {
+  border-left: #aaa solid 1px;
+  padding-left: 3px;
+  position: absolute;
+  white-space: nowrap;
+}
+
+div.timeline dl.time-axis dd {
+  background: #fff;
+  line-height: 1em;
+  bottom: 0;
+}
+
+div.timeline dl.time-axis dt {
+  background: #fff;
+  font-size: large;
+  line-height: 1.6em;
+  padding-bottom: .6em;
+  top: 0;
+}
+
+div.timeline li {
+  height: 25px;
+  line-height: 25px;
+}
+
+div.timeline li.activity {
+  background: #08c url(shine.png);
+  color: #fff;
+  display: inline;
+  float: left;
+  font-size: 9px;
+  list-style: none;
+  text-align: left;
+  text-indent: 10px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+div.timeline li.activity.started {
+  font-weight: bold;
+}
+
+div.timeline li.activity div.status {
+  background: #ccc url(hilite.png);
+  border-color: #888;
+  border-style: solid;
+  border-width: 0 1px 1px 0;
+  height: 4px;
+}
+
+div.timeline li.activity.started div.status {
+  background-color: #0a0;
+  border-color: #080;
+  background-position: 100% 0;
+}
+
+div.timeline li.activity div.title {
+  border-color: #04b;
+  border-style: solid;
+  border-width: 1px 1px 1px 0;
+  height: 18px;
+}
+
+div.timeline li.activity div.title a {
+  color: #fff;
+  display: block;
+  height: 100%;
+  line-height: 18px;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+div.timeline li.performer {
+  border-bottom: #fff solid 3px;
+  font-size: 0;
+  list-style: none;
+  position: relative;
+  width: 100%;
+}
+
+div.timeline li.performer.idle span.performer-title {
+  background-color: #aaa;
+  border-color: #666;
+}
+
+div.timeline li.performer span.performer-title:hover {
+  background-color: #000;
+  cursor: pointer;
+}
+
+div.timeline ol.activities {
+  background: #bbb url(shine.png) repeat-x;
+  float: left;
+  height: 25px;
+  margin-right: -1px;
+  overflow: hidden;
+  position: relative;
+}
+
+div.timeline span {
+  display: block;
+  overflow: hidden;
+}
+
+div.timeline span.performer-title {
+  background: #08f url(shine.png) repeat-x;
+  border: #04a solid 1px;
+  color: #fff;
+  float: left;
+  font-size: 14px;
+  font-weight: bold;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  width: 9.9%;
+}

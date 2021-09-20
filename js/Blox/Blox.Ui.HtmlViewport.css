@@ -1,0 +1,102 @@
+div.blox-ui div.html-viewport div.block, div.blox-ui div.html-viewport div.block input {
+    background: #fff;
+    font: small Calibri, Tahoma, sans-serif;
+}
+
+div.blox-ui div.html-viewport div.block {
+    border: #ddd solid 1px;
+    cursor: move;
+    padding: .4em;
+    position: absolute;
+    width: 13em;
+    z-index: 3;
+}
+
+div.blox-ui div.html-viewport div.block.hover {
+    border-color: #8bf;
+    z-index: 4;
+}
+
+div.blox-ui div.html-viewport div.block * {
+    margin: 0;
+    padding: 0;
+}
+
+div.blox-ui div.html-viewport div.block input, div.blox-ui div.html-viewport div.block label {
+    color: #555;
+    text-align: center;
+    width: 49.9%;
+}
+
+div.blox-ui div.html-viewport div.block input {
+    border: none;
+    padding-top: 2px;
+}
+
+div.blox-ui div.html-viewport div.block label {
+    cursor: move;
+    float: left;
+    font-weight: bold;
+}
+
+div.blox-ui div.html-viewport div.block p.name {
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+}
+
+div.blox-ui div.html-viewport div.block ul {
+    line-height: 1.5em;
+    list-style: none;
+}
+
+div.blox-ui div.html-viewport div.block ul.inputs, div.blox-ui div.html-viewport div.block ul.outputs {
+    float: left;
+    width: 50%;
+}
+
+div.blox-ui div.html-viewport div.block ul.outputs {
+    text-align: right;
+}
+
+div.blox-ui div.html-viewport div.block ul.parameters li {
+    border-color: #eee;
+    border-style: solid;
+    border-width: 1px 0;
+    margin-bottom: .2em;
+}
+
+div.blox-ui div.html-viewport div.connection:hover div.line {
+    background-color: #000;
+    border-color: #000;
+    z-index: 1;
+}
+
+div.blox-ui div.html-viewport div.connection div.line {
+    background: #ddd;
+    border-color: #ddd;
+    border-style: solid;
+    position: absolute;
+}
+
+div.blox-ui div.html-viewport div.connection div.line.horizontal {
+    border-width: 1px 0;
+    cursor: ns-resize;
+    margin-top: -1px;
+}
+
+div.blox-ui div.html-viewport div.connection div.line.vertical {
+    border-width: 0 1px;
+    cursor: ew-resize;
+    margin-left: -1px;
+}
+
+div.blox-ui div.html-viewport div.moving-block {
+    border: #008 solid 2px;
+    filter: alpha(opacity=30);
+    margin-left: -2px;
+    margin-top: -2px;
+    opacity: .3;
+    position: absolute;
+    z-index: 5;
+}

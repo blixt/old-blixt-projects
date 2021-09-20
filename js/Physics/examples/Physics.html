@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Physics</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="mootools-trunk-1545.js" type="text/javascript"></script>
+  <script src="../../ObjectManager/ObjectManager.js" type="text/javascript"></script>
+  <script src="../CanvasRenderer.js" type="text/javascript"></script>
+  <script src="../EventModel.js" type="text/javascript"></script>
+  <script src="../Physics.js" type="text/javascript"></script>
+  <script src="../Physics.Atom.js" type="text/javascript"></script>
+  <script src="../Physics.Constraint.js" type="text/javascript"></script>
+  <script src="../Physics.Group.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+var p = new Physics();
+p.boundaryX1 = 20;
+p.boundaryX2 = 1260;
+p.boundaryY2 = 460;
+
+function createWheel(x, y, radius, atoms) {
+	var g = new Physics.Group();
+	var ac = g.add(new Physics.Atom(x, y));
+    ac.meta.size = 6;
+
+	var a = [], c;
+	var step = Math.PI * 2 / atoms;
+	for (var i = 0; i < atoms; i++) {
+		g.add(a[i] = new Physics.Atom(x + Math.cos(step * i) * radius, y + Math.sin(step * i) * radius));
+		a[i].meta.color = '#000';
+
+		if (i > 0) {
+            g.add(c = new Physics.Constraint(a[i - 1], a[i]));
+            c.meta.color = '#000';
+            c.meta.width = 5;
+        }
+
+        if (i >= atoms / 2) {
+            g.add(c = new Physics.Constraint(a[i % Math.ceil(atoms / 2)], a[i]));
+            c.meta.color = '#000';
+            c.meta.width = 3;
+        }
+
+		g.add(c = new Physics.Constraint(ac, a[i]));
+		c.meta.visible = false;
+	}
+
+	g.add(c = new Physics.Constraint(a[atoms - 1], a[0]));
+	c.meta.color = '#000';
+    c.meta.width = 5;
+
+	return g;
+}
+
+var c;
+
+var wheel = createWheel(1000, 400, 50, 16);
+var a1 = wheel.atoms[0];
+var a2 = wheel.atoms[1];
+
+var smallWheel = createWheel(1200, 400, 20, 8);
+var a5 = smallWheel.atoms[0];
+
+wheel.add(c = new Physics.Constraint(a1, a5));
+c.meta.width = 5;
+
+
+var a = [], cs = [];
+for (var i = 1; i < 17; i += 4) {
+    c = wheel.add(new Physics.Constraint(a5, wheel.atoms[i]));
+    c.minLength = 150;
+    c.maxLength = 250;
+    c.frequency = -0.01;
+    c.meta.color = '#0c0';
+    
+    cs.push(c);
+    
+    if (i > 9) c.frequency *= -1;
+    
+    a.push(wheel.atoms[i]);
+}
+
+for (var i = 0; i < a.length; i++) {
+    for (var j = i; j < a.length; j++) {
+        var c = new Physics.Constraint(a[i], a[j]);
+        c.meta.visible = false;
+        wheel.add(c);
+    }
+}
+
+p.add(wheel);
+p.add(smallWheel);
+
+// Test serialization
+var om = new ObjectManager();
+om.register(p, 'physics');
+var dsp = ObjectManager.deserialize(om.serialize()).objects['physics'];
+
+// Set up a renderer (requires a browser that supports the <canvas> element)
+var rCanvas = new CanvasRenderer(dsp);
+rCanvas.scale = 0.5;
+rCanvas.setSize(640, 240);
+
+dsp.setUp();
+dsp.step.periodical(10, dsp);
+
+rCanvas.step();
+</script>
+</body>
+</html>

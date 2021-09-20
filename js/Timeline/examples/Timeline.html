@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Planning</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="Timeline.css" rel="stylesheet" type="text/css" />
+  <script src="mootools-trunk-1545.js" type="text/javascript"></script>
+  <script src="../../date/date.js" type="text/javascript"></script>
+  <script src="../Timeline.js" type="text/javascript"></script>
+  <script src="../Timeline.Activity.js" type="text/javascript"></script>
+  <script src="../Timeline.Performer.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    function buildPerformer(numActivities, minDuration, maxDuration) {
+      var performer = new Timeline.Performer('Performer');
+      for (var i = 0; i < numActivities; i++) {
+        var activity = new Timeline.Activity('Activity', minDuration + Math.random() * (maxDuration - minDuration));
+        performer.addActivity(activity);
+      }
+
+      return performer;
+    }
+  </script>
+</head>
+<body>
+  <h1>Timeline</h1>
+
+  <h2>Example #1</h2>
+  <script type="text/javascript">
+    var timeline1 = new Timeline();
+    timeline1.range = 1000 * 60 * 60 * 24 * 14;
+    timeline1.scale = Timeline.TimeScale.days2;
+    timeline1.updateFrequency = 10000;
+
+    for (var i = 0; i < 5; i++) {
+      timeline1.addPerformer(buildPerformer(5, 1000 * 60 * 60 * 24 * 1, 1000 * 60 * 60 * 24 * 5));
+    }
+
+    timeline1.update();
+  </script>
+
+  <h2>Example #2</h2>
+  <script type="text/javascript">
+    var timeline2 = new Timeline();
+    timeline2.range = 1000 * 30;
+    timeline2.scale = Timeline.TimeScale.seconds;
+    timeline2.updateFrequency = 10;
+
+    for (var i = 0; i < 5; i++) {
+      timeline2.addPerformer(buildPerformer(5, 1000 * 5, 1000 * 25));
+    }
+
+    timeline2.update();
+  </script>
+  </body>
+</html>

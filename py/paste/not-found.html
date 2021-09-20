@@ -1,0 +1,13 @@
+{% extends "base_pastebin.html" %}
+
+{% block page_title %}Code snippet not found{% endblock %}
+
+{% block content %}
+<h2>Code snippet not found</h2>
+<p>A code snippet with the specified id could not be found. This may be due to one of the following reasons:</p>
+<ul>
+    <li>The code snippet has been removed since the URL you used was generated.</li>
+    <li>You didn't copy the whole URL. Recheck the URL.</li>
+    <li>You entered the URL to a code snippet that does not exist.</li>
+</ul>
+{% endblock %}

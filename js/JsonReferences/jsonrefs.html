@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>JSON with references</title>
+</head>
+<body>
+<script type="text/javascript">
+/**
+ * An attempt at introducing referential integrity to JSON. One
+ * requirement was that the JSON string would still be considered valid
+ * JavaScript.
+ * 
+ * Solution #1 gives each object or array in the JSON structure an id
+ * implicitly, based on their position in the string in a left to right
+ * order. References are then stored as a function call to a function
+ * called 'ref'. This function should only take the aforementioned id.
+ * Example: ref(6)
+ * 
+ * Solution #2 is a more logical approach, but uses more space. Each
+ * reference is represented by the actual path to the object, with this
+ * as the root object. Example: this["Customers"][0]
+ * 
+ * Copyright (c) 2008 Andreas Blixt <andreas@blixt.org>
+ * License: MIT license <http://www.opensource.org/licenses/mit-license.php>
+ * Project homepage: <http://blixt.googlecode.com/>
+ * 
+ * @author Andreas Blixt <andreas@blixt.org>
+ */
+
+// Solution #1
+function jsonDecode1(json) {
+	var object;
+
+	var ref = function (id, curObject, cur) {
+		if (!object) return null;
+		if (!curObject) { curObject = object; cur = { id: 0 }; }
+		if (cur.id == id) return curObject;
+
+		if (typeof curObject == 'object') {
+			var o;
+			if (curObject instanceof Array) {
+				for (var k = 0, l = curObject.length; k < l; k++) {
+					if (typeof curObject[k] != 'object') continue;
+					cur.id++;
+					if (o = ref(id, curObject[k], cur)) return o;
+				}
+			} else {
+				for (var p in curObject) {
+					if (typeof curObject[p] != 'object') continue;
+					cur.id++;
+					if (o = ref(id, curObject[p], cur)) return o;
+				}
+			}
+		}
+	};
+
+	object = eval('(' + json + ')');
+	return eval('(' + json + ')');
+}
+
+var json1 = '{"Products":[{"Name":"Teddy Bear","Price":6},{"Name":"My Little Pony","Price":9.99},{"Name":"Bob the Builder","Price": 7.49}],"Customers":[{"Name":"Mary Jane Hudson"}],"Orders":[{"Customer":ref(6),"Products":[ref(2),ref(4)]}]}';
+
+
+// Solution #2
+function jsonDecode2(json) {
+	var object = eval('(' + json.replace(/\bthis(\[("([^\\"]+|\\.)*"|\d+)\])*/g, 'null') + ')');
+	return (function () { return eval('(' + json + ')'); }).call(object);
+}
+
+var json2 = '{"Products":[{"Name":"Teddy Bear","Price":6},{"Name":"My Little Pony","Price":9.99},{"Name":"Bob the Builder","Price": 7.49}],"Customers":[{"Name":"Mary Jane Hudson"}],"Orders":[{"Customer":this["Customers"][0],"Products":[this["Products"][0],this["Products"][2]]}]}';
+
+
+// Testing solutions (requires the Firebug extension.)
+// www.getfirebug.com
+setTimeout(function () {
+    console.log(json1);
+    console.log(jsonDecode1(json1));
+    console.log(json2);
+    console.log(jsonDecode2(json2));
+}, 0);
+</script>
+</body>
+</html>

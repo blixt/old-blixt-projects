@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Physics</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="mootools-trunk-1545.js" type="text/javascript"></script>
+  <script src="../../ObjectManager/ObjectManager.js" type="text/javascript"></script>
+  <script src="../CanvasRenderer.js" type="text/javascript"></script>
+  <script src="../EventModel.js" type="text/javascript"></script>
+  <script src="../Physics.js" type="text/javascript"></script>
+  <script src="../Physics.Atom.js" type="text/javascript"></script>
+  <script src="../Physics.Constraint.js" type="text/javascript"></script>
+  <script src="../Physics.Group.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+var physics = new Physics();
+physics.boundaryX1 = -10000;
+physics.boundaryX2 = 10000;
+physics.boundaryY1 = -10000;
+physics.boundaryY2 = 10000;
+physics.gravityX = 0;
+physics.gravityY = 0;
+
+function createWheel(x, y, radius, atoms) {
+	var g = new Physics.Group();
+	var ac = g.add(new Physics.Atom(x, y));
+	ac.meta.color = '#af0';
+    ac.meta.size = 3;
+
+	var a = [], c;
+	var step = Math.PI * 2 / atoms;
+	for (var i = 0; i < atoms; i++) {
+		g.add(a[i] = new Physics.Atom(x + Math.cos(step * i) * radius, y + Math.sin(step * i) * radius));
+		a[i].radius = 7;
+		a[i].meta.color = '#af0';
+		a[i].meta.size = 7;
+
+		if (i > 0) {
+            g.add(c = new Physics.Constraint(a[i - 1], a[i]));
+            c.meta.color = '#af0';
+            c.meta.width = 5;
+        }
+
+        if (i >= atoms / 2) {
+            g.add(c = new Physics.Constraint(a[i % Math.ceil(atoms / 2)], a[i]));
+            c.stiffness = 0.8;
+            c.meta.visible = false;
+        }
+
+		g.add(c = new Physics.Constraint(ac, a[i]));
+        c.stiffness = 0.4;
+        c.meta.visible = false;
+	}
+
+	g.add(c = new Physics.Constraint(a[atoms - 1], a[0]));
+	c.meta.color = '#af0';
+    c.meta.width = 5;
+
+	return g;
+}
+
+var ball = createWheel(1000, 1500, 50, 12);
+
+var grav = ball.add(new Physics.Atom(1000, 1525));
+grav.meta.visible = false;
+
+physics.add(ball);
+
+var line;
+line = ball.add(new Physics.Constraint(ball.atoms[0], grav));
+line.meta.color = '#f00';
+line.meta.width = 2;
+
+var g, p;
+
+var colors = ['#c00', '#0c0', '#8c0', '#00c', '#c0c', '#fc0', '#0cf', '#0aa', '#a0f', '#f0a'];
+
+for (var i = 0; i < colors.length; i++) {
+    var r = 50 + Math.round(Math.random() * 200);
+
+    g = new Physics.Group();
+    p = g.add(new Physics.Atom(0, 0));
+    p.mass = 1000000000 * r;
+    p.radius = r;
+    p.meta.color = colors[i];
+    p.meta.size = r;
+    physics.add(g);
+}
+
+g = new Physics.Group();
+p = g.add(new Physics.Atom(1000, 1000));
+p.mass = 2000000000000;
+p.radius = 300;
+p.meta.color = '#0a0';
+p.meta.size = 300;
+physics.add(g);
+
+var key = { left: 0, right: 0 };
+
+document.addEvent('keydown', function (e) {
+    if (e.key in key) key[e.key] = 1;
+});
+
+document.addEvent('keyup', function (e) {
+    if (e.key in key) key[e.key] = 0;
+});
+
+// Set up a renderer (requires a browser that supports the <canvas> element)
+var rCanvas = new CanvasRenderer(physics);
+rCanvas.scale = 0.5;
+rCanvas.setSize(1000, 1000);
+
+physics.setUp();
+physics.step.periodical(10, physics);
+
+p.x += 1;
+p.y += 1;
+
+rCanvas.step();
+
+physics.addObserver({
+    step: function () {
+        p.x += (1000 - p.x) * 0.001;
+        p.y += (1000 - p.y) * 0.001;
+    
+        var d = -key['left'] + key['right'];
+        if (d) {
+            var vx = grav.x - ball.atoms[0].x, vy = grav.y - ball.atoms[0].y;
+            var ix = vy, iy = -vx;
+            ball.atoms[0].x += ix * 0.3 * d;
+            ball.atoms[0].y += iy * 0.3 * d;
+        }
+    }
+});
+</script>
+</body>
+</html>

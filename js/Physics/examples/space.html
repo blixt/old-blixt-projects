@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Physics</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script src="mootools-trunk-1545.js" type="text/javascript"></script>
+  <script src="../../ObjectManager/ObjectManager.js" type="text/javascript"></script>
+  <script src="../CanvasRenderer.js" type="text/javascript"></script>
+  <script src="../EventModel.js" type="text/javascript"></script>
+  <script src="../Physics.js" type="text/javascript"></script>
+  <script src="../Physics.Atom.js" type="text/javascript"></script>
+  <script src="../Physics.Constraint.js" type="text/javascript"></script>
+  <script src="../Physics.Group.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+var physics = new Physics();
+physics.boundaryX1 = 20;
+physics.boundaryX2 = 1260;
+physics.boundaryY2 = 460;
+physics.gravityY = 0.05;
+
+//     01234567890123456
+//
+// 0       a-------b
+// 1      /         \
+// 2     /           \
+// 3    /             \
+// 4   c---------------d
+// 5   \ \           / /
+// 6    e--f---g---h--i 
+// 7     j\\k     l//m
+// 8      n--o   p--q
+
+var group = new Physics.Group();
+
+var a, b, c, d, e, f, g, h, i, j, k, l, m, n, o;
+group.add(a = new Physics.Atom(140, 100));
+group.add(b = new Physics.Atom(220, 100));
+group.add(c = new Physics.Atom(100, 180));
+group.add(d = new Physics.Atom(260, 180));
+group.add(e = new Physics.Atom(110, 220));
+group.add(f = new Physics.Atom(140, 220));
+group.add(g = new Physics.Atom(180, 220));
+group.add(h = new Physics.Atom(220, 220));
+group.add(i = new Physics.Atom(250, 220));
+group.add(j = new Physics.Atom(120, 240));
+group.add(k = new Physics.Atom(150, 240));
+group.add(l = new Physics.Atom(210, 240));
+group.add(m = new Physics.Atom(240, 240));
+group.add(n = new Physics.Atom(130, 260));
+group.add(o = new Physics.Atom(160, 260));
+group.add(p = new Physics.Atom(200, 260));
+group.add(q = new Physics.Atom(230, 260));
+
+for (var ti = 0; ti < group.atoms.length; ti++) {
+    group.atoms[ti].meta.visible = false;
+}
+
+var x;
+
+group.add(x = new Physics.Constraint(a, d));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(a, g));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(a, n));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(b, c));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(b, g));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(b, q));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(c, d));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(c, i));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(d, e));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(e, f));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(e, k));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(f, j));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(g, p));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(h, i));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(h, m));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(i, l));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(j, k));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(j, o));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(k, n));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(l, m));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(l, q));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(m, p));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(o, g));
+x.meta.visible = false;
+group.add(x = new Physics.Constraint(o, p));
+x.meta.visible = false;
+
+group.add(x = new Physics.Constraint(a, b));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(a, c));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(b, d));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(c, e));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(c, f));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(d, h));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(d, i));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(e, j));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(f, g));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(f, k));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(g, h));
+x.meta.width = 4;
+group.add(x = new Physics.Constraint(h, l));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(i, m));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(j, n));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(k, o));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(l, p));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(m, q));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(n, o));
+x.meta.width = 2;
+group.add(x = new Physics.Constraint(p, q));
+x.meta.width = 2;
+
+physics.add(group);
+
+var thrusters = [
+    [a, g],
+    [b, g],
+    [c, d],
+    [d, c],
+    [f, b],
+    [g, [a, b]],
+    [h, a]
+];
+
+var thrustRange = Math.PI / 2;
+function thrust(dx, dy, str) {
+    var thrustAngle = Math.atan2(dx, dy);
+
+    for (var ti = 0; ti < thrusters.length; ti++) {
+        var pa = thrusters[ti][0], pb = thrusters[ti][1];
+
+        var vx, vy;
+        if (pb instanceof Array) {
+            vx = pb[0].x; vy = pb[0].y;
+            for (var ui = 1; ui < pb.length; ui++) {
+                vx += pb[ui].x; vy += pb[ui].y;
+            }
+            vx = vx / pb.length - pa.x; vy = vy / pb.length - pa.y;
+        } else {
+            vx = pb.x - pa.x; vy = pb.y - pa.y;
+        }
+
+        var angle = Math.atan2(vx, vy);
+        var delta = Math.abs(angle - thrustAngle);
+        if (delta > Math.PI) delta = Math.PI + Math.PI - delta;
+        
+        if (delta < thrustRange) {
+            var modStr = 1 - delta / thrustRange;
+            pa.x += Math.sin(angle) * str * modStr;
+            pa.y += Math.cos(angle) * str * modStr;
+
+            pa.meta.visible = true;
+            pa.meta.color = '#f00';
+            pa.meta.size = 3 + 5 * modStr;
+        } else {
+            pa.meta.visible = false;
+        }
+    }
+}
+
+var key = { up: 0, down: 0, left: 0, right: 0 };
+
+document.addEvent('keydown', function (e) {
+    if (e.key in key) key[e.key] = 1;
+});
+
+document.addEvent('keyup', function (e) {
+    if (e.key in key) key[e.key] = 0;
+});
+
+// Set up a renderer (requires a browser that supports the <canvas> element)
+var rCanvas = new CanvasRenderer(physics);
+rCanvas.scale = 0.5;
+rCanvas.setSize(640, 240);
+
+physics.setUp();
+physics.step.periodical(10, physics);
+
+rCanvas.step();
+
+physics.addObserver({
+    step: function () {
+        var tx = -key['left'] + key['right'], ty = -key['up'] + key['down'];
+        if (tx || ty) {
+            thrust(tx, ty, 1);
+        } else {
+            for (var ti = 0; ti < thrusters.length; ti++) {
+                thrusters[ti][0].meta.visible = false;
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Blox example</title>
+<script src="mootools.js" type="text/javascript"></script>
+<script src="../../ObjectManager/ObjectManager.js" type="text/javascript"></script>
+<script src="../EventModel.js" type="text/javascript"></script>
+<script src="../Blox.js" type="text/javascript"></script>
+<script src="../Blox.Block.js" type="text/javascript"></script>
+<script src="../Blox.Block.Add.js" type="text/javascript"></script>
+<script src="../Blox.Block.Alert.js" type="text/javascript"></script>
+<script src="../Blox.Block.Compare.js" type="text/javascript"></script>
+<script src="../Blox.Block.Data.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+/*
+                                                         
+     Data                                                
+ +----------+                                            
+ | [    3 ] |                                            
+ > In  Data >--+                                         
+ +----------+  |         Add                             
+               |  +----------------+                     
+     Data      +--> Values  Result >--+------------------...
+ +----------+  |  +----------------+  |      Data        
+ | [    5 ] |  |                      |  +----------+  +-...
+ > In  Data >--+                      |  | [   10 ] |  | 
+ +----------+                         +--> In  Data >--+ 
+                                         +----------+    
+
+
+                                         Data    
+                                     +----------+
+                                     | [ Less ] |
+                                  +--> In  Data >--+
+                                  |  +----------+  |
+              Compare             |      Data      |
+    +--------------------------+  |  +----------+  |       Alert      
+...-> Values         Less than >--+  | [ Same ] |  |  +--------------+
+    |                 Equal to >-----> In  Data >--+--> Message  Out >
+...-> Compare to  Greater than >--+  +----------+  |  +--------------+
+    +--------------------------+  |      Data      |
+                                  |  +----------+  |
+                                  |  | [ More ] |  |
+                                  +--> In  Data >--+
+                                     +----------+ 
+
+*/
+    var d1 = new Blox.Block.Data();
+    d1.setParameter('Data', 3);
+
+    var d2 = new Blox.Block.Data();
+    d2.setParameter('Data', 5);
+
+    var add = new Blox.Block.Add();
+    add.subscribe('Values', d1, 'Data');
+    add.subscribe('Values', d2, 'Data');
+
+    var d3 = new Blox.Block.Data();
+    d3.setParameter('Data', 10);
+    d3.subscribe('In', add, 'Result');
+
+    var cmp = new Blox.Block.Compare();
+    cmp.subscribe('Values', add, 'Result');
+    cmp.subscribe('Compare to', d3, 'Data');
+
+    var d4 = new Blox.Block.Data();
+    d4.setParameter('Data', 'Less');
+    d4.subscribe('In', cmp, 'Less than');
+
+    var d5 = new Blox.Block.Data();
+    d5.setParameter('Data', 'Same');
+    d5.subscribe('In', cmp, 'Equal to');
+
+    var d6 = new Blox.Block.Data();
+    d6.setParameter('Data', 'More');
+    d6.subscribe('In', cmp, 'Greater than');
+
+    var alrt = new Blox.Block.Alert();
+    alrt.subscribe('Message', d4, 'Data');
+    alrt.subscribe('Message', d5, 'Data');
+    alrt.subscribe('Message', d6, 'Data');
+
+    var blox = new Blox();
+    blox.add(d1, d2, add, d3, cmp, d4, d5, d6, alrt);
+
+
+    // Testing serialization.
+    var om1 = new ObjectManager();
+    om1.register(blox, 'blox');
+    var s = om1.serialize();
+
+    var om2 = ObjectManager.deserialize(s);
+    var blox2 = om2.objects['blox'];
+
+
+    blox2.run();
+</script>
+</body>
+</html>

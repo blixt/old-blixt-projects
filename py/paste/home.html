@@ -1,0 +1,28 @@
+{% extends "base_pastebin.html" %}
+
+{% block page_title %}Submit code snippet{% endblock %}
+
+{% block content %}
+<form action="/" id="submit-code" method="post">
+<h2>Submit code snippet</h2>
+<p{% if form.code.errors %} class="error"{% endif %}><label for="code">Code{% if form.code.errors %} ({{ form.code.errors|join:", " }}){% endif %}</label> <textarea cols="60" id="code" name="code" rows="10">{{ form.code.data|default:""|escape }}</textarea></p>
+<p{% if form.title.errors %} class="error"{% endif %}><label for="title">Title ({{ form.title.errors|join:", "|default:"optional" }})</label> <input id="title" name="title" size="50" type="text" value="{{ form.title.data|default:""|escape }}" /></p>
+<input type="submit" value="Submit" />
+</form>
+<div id="info">
+<h2>Information</h2>
+<p>Hi there! This pastebin is an open-source project currently in development by
+Andreas Blixt &lt;<a href="mailto:andreas@blixt.org">andreas@blixt.org</a>&gt;.
+Its source can be seen at the following URL:
+<a href="http://blixt.googlecode.com/svn/trunk/py/paste/">http://blixt.googlecode.com/svn/trunk/py/paste/</a></p>
+<p>Please report any issues you find and submit any suggestions you have at the
+project URL (use label <em>Library-Paste</em>):
+<a href="http://code.google.com/p/blixt/issues/list">http://code.google.com/p/blixt/issues/list</a></p>
+</div>{% if recent_snippets %}
+<div id="recent-submissions">
+<h2>Recent submissions</h2>
+<ol>{% for snippet in recent_snippets %}
+<li><a href="{{ snippet.create_url }}"><strong>{{ snippet.title|default:"Untitled snippet"|escape }}</strong> by <strong>{{ snippet.author|default:"an anonymous coder"|escape }}</strong> <small>{{ snippet.added|timesince }} ago</small></a></li>{% endfor %}
+</ol>{% endif %}
+</div>
+{% endblock %}

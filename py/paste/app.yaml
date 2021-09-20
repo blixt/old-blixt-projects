@@ -1,0 +1,18 @@
+application: blixt
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
+
+- url: /design
+  static_dir: design
+
+- url: /js
+  static_dir: js
+
+- url: /.*
+  script: main.py

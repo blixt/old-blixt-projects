@@ -1,0 +1,20 @@
+{% extends "base_pastebin.html" %}
+
+{% block page_title %}{{ snippet.title|default:"Untitled snippet" }}{% endblock %}
+
+{% block content %}
+<h2>{{ snippet.title|default:"Untitled snippet"|escape }}</h2>
+<p class="info">Added by <strong>{{ snippet.author|default:"an anonymous coder"|escape }}</strong> {{ snippet.added|timesince }} ago.</p>
+<pre class="code">{{ snippet.code|escape }}</pre>
+<form action="{{ snippet.create_url }}#comments" id="add-comment" method="post">
+<h2>Make a comment</h2>
+<p{% if form.comment.errors %} class="error"{% endif %}><label for="comment">Comment{% if form.comment.errors %} ({{ form.comment.errors|join:", " }}){% endif %}</label> <textarea cols="60" id="comment" name="comment" rows="4">{{ form.comment.data|default:""|escape }}</textarea></p>
+<input type="submit" value="Submit" />
+</form>{% if comment_list %}
+<div id="comments">
+<h2>Comments</h2>
+<dl>{% for comment in comment_list %}
+<dt>Comment by <strong>{{ comment.author|default:"an anonymous coder"|escape }}</strong>, <small>{{ comment.added|timesince }} ago</small></dt>
+<dd>{{ comment.comment|escape }}</dd>{% endfor %}
+</dl>{% endif %}
+{% endblock %}

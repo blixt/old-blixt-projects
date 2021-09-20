@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>ObjectManager example</title>
+<script src="../ObjectManager.js" type="text/javascript"></script>
+<script src="mootools-beta-1.2b2.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript">
+/*
+ * EXAMPLE
+ * Defines a set of classes marked as serializable, creates instances of them
+ * and then serializes/deserializes them.
+ */
+
+var House = new Class({
+    serializable: 'House',
+
+    initialize: function () {
+        this.rooms = [];
+    },
+    
+    add: function (room) {
+        room.house = this;
+        this.rooms.push(room);
+    },
+
+    deserialize: function (data) {
+        for (var i = 0; i < data.rooms.length; i++) {
+            this.add(data.rooms[i]);
+        }
+    },
+
+    remove: function (room) {
+        this.rooms.erase(room);
+        room.house = null;
+    },
+
+    serialize: function () {
+        return { rooms: this.rooms };
+    }
+});
+
+var Room = new Class({
+    serializable: 'Room',
+
+    initialize: function (name, house) {
+        this.name = name;
+        this.people = [];
+        if (house) house.add(this);
+    },
+    
+    add: function (person) {
+        person.room = this;
+        this.people.push(person);
+    },
+
+    deserialize: function (data) {
+        this.name = data.name;
+        for (var i = 0; i < data.people.length; i++) {
+            this.add(data.people[i]);
+        }
+    },
+
+    remove: function (person) {
+        this.people.erase(person);
+        person.room = null;
+    },
+
+    serialize: function () {
+        return { name: this.name, people: this.people };
+    }
+});
+
+var Person = new Class({
+    serializable: 'Person',
+
+    initialize: function (name, room) {
+        this.name = name;
+        if (room) room.add(this);
+    },
+
+    deserialize: function (data) {
+        this.name = data.name;
+    },
+
+    serialize: function () {
+        return { name: this.name };
+    }
+});
+
+// Build test data.
+var house = new House();
+
+var kitchen = new Room('Kitchen', house),
+    livingRoom = new Room('Living room', house),
+    bedroom = new Room('Bedroom', house);
+
+var andreas = new Person('Andreas', kitchen),
+    matti = new Person('Matti', livingRoom),
+    santaClaus = new Person('Santa Claus', bedroom),
+    theGrinch = new Person('The Grinch', bedroom);
+
+// Create an object manager.
+var manager = new ObjectManager();
+
+// Register the house instance with a specific id.
+// The other instances will be included automatically when
+// serializing by following references.
+manager.register(house, 'my house');
+
+// Encode the serialized object manager as JSON and print
+// it on the page.
+var json = JSON.encode(manager.serialize());
+document.write(json);
+
+// Decode the JSON into an object then deserialize the
+// object.
+var jsonObject = JSON.decode(json);
+var deserialized = ObjectManager.deserialize(jsonObject);
+
+// (Firebug required)
+// Print the original house instance and the deserialized
+// house instance to show that they are identical.
+console.log({
+    before: house,
+    intermediate: jsonObject,
+    after: deserialized.objects['my house']
+});
+</script>
+</body>
+</html>
